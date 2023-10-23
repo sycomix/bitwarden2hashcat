@@ -27,11 +27,11 @@ import base64
 def extract_windows():
     userprofile = os.getenv("userprofile")
     locations = [
-        "data.json",  # current directory
-        "bitwarden-appdata\\data.json",  # portable installation
-        "{}\\AppData\\Local\\Packages\\8bitSolutionsLLC.bitwardendesktop_h4e712dmw3xyy\\LocalCache\\Roaming\\Bitwarden\\data.json".format(userprofile),  # Windows 10 App
-        "{}\\AppData\\Roaming\\Bitwarden\\data.json".format(userprofile),  # Bitwarden Windows
-        "{}\\AppData\\Roaming\\Bitwarden CLI\\data.json".format(userprofile)  # Bitwarden CLI
+        "data.json",
+        "bitwarden-appdata\\data.json",
+        f"{userprofile}\\AppData\\Local\\Packages\\8bitSolutionsLLC.bitwardendesktop_h4e712dmw3xyy\\LocalCache\\Roaming\\Bitwarden\\data.json",
+        f"{userprofile}\\AppData\\Roaming\\Bitwarden\\data.json",
+        f"{userprofile}\\AppData\\Roaming\\Bitwarden CLI\\data.json",
     ]
     for i in locations:
         if os.path.exists(i):
@@ -65,17 +65,17 @@ def extract_webbrowsers():
     if "nt" in os.name:
         userprofile = os.getenv("userprofile")
         paths = [
-            "{}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Local Extension Settings\\nngceckbapebfimnlniiiahkandclblb".format(userprofile),  # Chrome
-            "{}\\AppData\\Roaming\\Opera Software\\Opera Stable\\Local Extension Settings\\ccnckbpmaceehanjmeomladnmlffdjgn".format(userprofile),  # Opera
-            "{}\\AppData\\Local\\BraveSoftware\\Brave-browser\\User Data\\Default\\Local Extension Settings\\nngceckbapebfimnlniiiahkandclblb".format(userprofile),  # Brave
-            "{}\\AppData\\Local\\Vivaldi\\User Data\\Default\\Local Extension Settings\\nngceckbapebfimnlniiiahkandclblb".format(userprofile),  # Vivaldi
-            "{}\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Extensions\\jbkfoedolllekgbhcbcoahefnbanhhlh".format(userprofile)  # chromium-based Edge
+            f"{userprofile}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Local Extension Settings\\nngceckbapebfimnlniiiahkandclblb",
+            f"{userprofile}\\AppData\\Roaming\\Opera Software\\Opera Stable\\Local Extension Settings\\ccnckbpmaceehanjmeomladnmlffdjgn",
+            f"{userprofile}\\AppData\\Local\\BraveSoftware\\Brave-browser\\User Data\\Default\\Local Extension Settings\\nngceckbapebfimnlniiiahkandclblb",
+            f"{userprofile}\\AppData\\Local\\Vivaldi\\User Data\\Default\\Local Extension Settings\\nngceckbapebfimnlniiiahkandclblb",
+            f"{userprofile}\\AppData\\Local\\Microsoft\\Edge\\User Data\\Default\\Extensions\\jbkfoedolllekgbhcbcoahefnbanhhlh",
         ]
     else:
         userprofile = os.getenv("HOME")
         paths = [
-            "{}/.config/google-chrome/Default/Local Extension Settings/nngceckbapebfimnlniiiahkandclblb".format(userprofile),  # Chrome
-            "{}/snap/chromium/common/chromium/Default/Local Extension Settings/nngceckbapebfimnlniiiahkandclblb".format(userprofile)  # Chromium snap
+            f"{userprofile}/.config/google-chrome/Default/Local Extension Settings/nngceckbapebfimnlniiiahkandclblb",
+            f"{userprofile}/snap/chromium/common/chromium/Default/Local Extension Settings/nngceckbapebfimnlniiiahkandclblb",
         ]
 
     try:
@@ -145,7 +145,7 @@ def process(path=None):
         try:
             data = get_data(path)
         except FileNotFoundError:
-            print("File {} not found... trying other methods".format(path))
+            print(f"File {path} not found... trying other methods")
 
     if not data:
         data = extract_webbrowsers()
@@ -155,7 +155,7 @@ def process(path=None):
 
 
 def format_data(data):
-    return "$bitwarden$2*{}*{}*{}".format(data[2], base64.b64encode(data[0].encode()).decode(), data[1])  # version 2, see https://github.com/hashcat/hashcat/pull/3202
+    return f"$bitwarden$2*{data[2]}*{base64.b64encode(data[0].encode()).decode()}*{data[1]}"
 
 
 if __name__ == "__main__":
